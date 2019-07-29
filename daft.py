@@ -3,12 +3,12 @@
 from __future__ import division, print_function
 
 __all__ = ["PGM", "Node", "Edge", "Plate"]
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
-from matplotlib.patches import FancyArrow
+from matplotlib.patches import FancyArrowPatch
 from matplotlib.patches import Rectangle as Rectangle
 
 import numpy as np
@@ -728,16 +728,20 @@ class Edge(object):
         if self.directed:
             p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
             p["fc"] = _pop_multiple(p, "k", "fc", "facecolor")
-            p["head_length"] = p.get("head_length", 0.25)
-            p["head_width"] = p.get("head_width", 0.1)
+            #p["head_length"] = p.get("head_length", 0.25)
+            #p["head_width"] = p.get("head_width", 0.1)
 
             # Build an arrow.
             args = self._get_coords(ctx)
 
             #zero lengh arrow produce error
             if not(args[2] == 0. and args[3] == 0.):
-                ar = FancyArrow(*self._get_coords(ctx), width=0,
-                    length_includes_head=True, **p)
+                x, y, dx, dy = *self._get_coords(ctx), #linewidth=0,
+                ar = FancyArrowPatch((x, y), (x+dx, y+dy), #*self._get_coords(ctx), #linewidth=0,
+                        arrowstyle="->", mutation_scale=9,
+                    #length_includes_head=True, 
+                    **p)
+                #ar.set_arrowstyle("Simple",head_length=20.25, head_width=1)
 
                 # Add the arrow to the axes.
                 ax.add_artist(ar)
